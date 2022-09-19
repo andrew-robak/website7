@@ -7,11 +7,11 @@ disqusShortname: ''
 params:
   banner:
     image:
-    buttonText: Get Started
+    buttonText: Learn more about me
     #subtitle: |-
       #A RESPONSIVE SITE TEMPLATE DESIGNED BY HTML5 UP
       #AND RELEASED UNDER THE CREATIVE COMMONS.
-    title: Hi, my name is Andrew. I am a Master in Analytics and Management student at LBS interested in the use of data science in management consulting. 
+    title: Hi, my name is Andrew!
   blog: {}
   contact:
     address:
@@ -57,38 +57,38 @@ params:
       - icon: fa-linkedin
         label: LinkedIn
         url: https://www.linkedin.com/in/jedrzej-robak/
-  image: 'lbs.jpg'
+  image: 'banner.jpg'
   name: Your name
   navigation:
     button1:
       - name: Get Started
         url: blogs
-    button2:
-      - name: Log In
-        url: '#'
+#    button2:
+#      - name: Log In
+#        url: '#'
     links:
       - name: Home
         url: '#'
       - name: Blogs
         url: blogs
-      - name: Generic Blog
-        url: blogs/ipsum
-      - name: Elements
-        url: elements.html
+#      - name: Generic Blog
+#        url: blogs/ipsum
+#      - name: Elements
+#        url: elements.html
     menu: Menu
     subtitle: By HTML5 Up
     title: Forty
   tiles:
     enable: yes
     showcase:
-      - image: backround_sunset.jpg
-        subtitle: I love sunsets
-        title: About me
+      - image: guitar.jpg
+        subtitle: About me
+        title: CV
         url: blogs/aliquam
-      - image: pic02.jpg
-        subtitle: Feugiat Amet Tempus
-        title: Tempus
-        url: blogs/tempus
+      - image: stocks.jpg
+        subtitle: R analysis
+        title: Risk-Return of DJIA Stocks
+        url: blogs/risk_return
       - image: pic03.jpg
         subtitle: Lorem Etiam Nullam
         title: Magna
