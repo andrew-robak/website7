@@ -46,9 +46,6 @@ library(gganimate)
 library(scales)
 library(infer)
 ```
-
-# Biden's Approval Margins
-
 We will analyse the evolution of approval margins of US
 President Joe Biden. Glimpsing at the dataset, we notice there are 22
 variables and 4,495 observations:
