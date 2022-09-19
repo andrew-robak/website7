@@ -1,16 +1,17 @@
 baseURL: https://andrew-robak-portfolio.netlify.app/
 languageCode: en-us
-title: Andrew
+title: Portfolio website for Andrew Robak
 theme: forty
 googleAnalytics: ''
 disqusShortname: ''
 params:
   banner:
+    image:
     buttonText: Get Started
-    subtitle: |-
-      A RESPONSIVE SITE TEMPLATE DESIGNED BY HTML5 UP
-      AND RELEASED UNDER THE CREATIVE COMMONS.
-    title: Hi, my name is Andrew
+    #subtitle: |-
+      #A RESPONSIVE SITE TEMPLATE DESIGNED BY HTML5 UP
+      #AND RELEASED UNDER THE CREATIVE COMMONS.
+    title: Hi, my name is Andrew. I am a Master in Analytics and Management student at LBS interested in the use of data science in management consulting. 
   blog: {}
   contact:
     address:
@@ -21,10 +22,10 @@ params:
     buttonClear: Clear
     buttonSend: Send message
     email:
-      - email: kostis@london.edu
+      - email: arobak.mam2023@london.edu
     enable: yes
     phone:
-      - phone: (000) 000-0000 x1234
+      - phone: available upon request
         title: Phone
   custom_css: []
   custom_js: []
@@ -34,29 +35,29 @@ params:
     text: Please visit [this page](/)
   favicon: favicon.ico
   footer:
-    copyright: Kostis
+    copyright: Andrew Robak
     enable: yes
     quicklinks:
       - alt: HTML5 UP
         text: 'Design: '
         url: https://www.html5up.net
     social:
-      - icon: fa-twitter
-        label: Twitter
-        url: https://www.twitter.com/kostisc
+#      - icon: fa-twitter
+#        label: Twitter
+#        url: https://www.twitter.com/kostisc
 #      - icon: fa-facebook
 #        label: Facebook
 #        url: https://www.facebook.com
-      - icon: fa-instagram
-        label: Instagram
-        url: https://www.instagram.com/kostisc
+#      - icon: fa-instagram
+#        label: Instagram
+#        url: https://www.instagram.com/kostisc
       - icon: fa-github
         label: GitHub
-        url: https://www.github.com/kostis-christodoulou
+        url: https://github.com/andrew-robak
       - icon: fa-linkedin
         label: LinkedIn
-        url: https://www.linkedin.com/in/kostis-christodoulou-285147/
-  image: ''
+        url: https://www.linkedin.com/in/jedrzej-robak/
+  image: 'lbs.jpg'
   name: Your name
   navigation:
     button1:
