@@ -14,7 +14,7 @@ title: CV
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::include_graphics("/img/andrew_cv.jpeg",error=FALSE)
+knitr::include_graphics("/img/andrew_cv.jpg",error=FALSE)
 ```
 
 
