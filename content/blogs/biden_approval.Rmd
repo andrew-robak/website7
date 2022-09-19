@@ -1,0 +1,114 @@
+---
+categories:  
+- ""    #the front matter should be like the one found in, e.g., blog2.md. It cannot be like the normal Rmd we used
+- ""
+date: "2021-09-30"
+description: Biden's Approval Margins # the title that will show up once someone gets to this page
+draft: false
+image: spices.jpg # save picture in \static\img\blogs. Acceptable formats= jpg, jpeg, or png . Your iPhone pics wont work
+
+keywords: ""
+slug: biden_approval # slug is the shorthand URL address... no spaces plz
+title: Biden's Approval Margins
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+library(wbstats)
+library(countrycode)
+library(patchwork)
+library(gganimate)
+library(scales)
+library(infer)
+```
+
+# Biden's Approval Margins
+
+We will analyse the evolution of approval margins of US
+President Joe Biden. Glimpsing at the dataset, we notice there are 22
+variables and 4,495 observations:
+
+```{r, cache=TRUE}
+# Import approval polls data directly off fivethirtyeight website
+approval_polllist <- read_csv('https://projects.fivethirtyeight.com/biden-approval-data/approval_polllist.csv') 
+
+glimpse(approval_polllist)
+```
+
+## Create a plot
+
+We will first calculate the net approval rate (approve - disapprove) for
+each week in 2022 along with its 95% confidence interval, and then plot
+the results as a line plot grouping by respodent group (Adults, Voters,
+All Groups).
+
+```{r question2}
+
+fixed_dates <- approval_polllist %>%
+  mutate(date = mdy(enddate),
+         weeks = week(date),
+         year = year(date),
+         net_rate = approve - disapprove) %>%
+  filter(year == 2022, weeks<50) %>%
+  group_by(subgroup , weeks) %>%
+  
+  # we calculated the 95% confidence interval. 
+  summarise(mean_rate = mean(net_rate,na.rm=TRUE),
+            sd_rate = sd(net_rate,na.rm=TRUE),
+            number = n(),
+            t_critical = qt(0.975,number-1),
+            lower_bound = mean_rate - t_critical*sd_rate/ sqrt(number),
+            upper_bound = mean_rate + t_critical*sd_rate/ sqrt(number)) 
+
+# we draw the graph of the net approval rate changing over weeks with its confidence interval.
+  ggplot(fixed_dates, aes(x = weeks, y = mean_rate, color = subgroup)) + 
+  geom_ribbon(aes(ymin = lower_bound, ymax = upper_bound), 
+              fill = "orange", 
+              alpha = 0.25, 
+              show.legend = FALSE) +
+    facet_grid(rows = vars(subgroup)) +
+    geom_line(aes(x = weeks, y = mean_rate, 
+                  color = subgroup),
+              show.legend = FALSE) +
+    labs(title = "Biden's net approval ratings in 2022",
+         subtitle = "Weekly Data, Approve - Disapprove, %",
+         caption = "Source: https://projects.fivethirtyeight.com/biden-approval-data/",
+         x = NULL, 
+         y = NULL) +
+    theme_minimal()
+
+
+```
+
+We can see President Biden's net approval relative has remained negative
+since the first week of 2022 among all poll respondents, meaning more
+people disapprove than approve of the President. Furthermore, we notice
+a sharp decline in the net approval rate beginning in week 23. Since
+that time, the approval rate seems to have returned to pre-drop levels,
+potentially due to the POTUS's recent delivery on several campaign
+promises, primarily passing the Inflation Reduction Act.

@@ -1,0 +1,97 @@
+---
+categories:  
+- ""    #the front matter should be like the one found in, e.g., blog2.md. It cannot be like the normal Rmd we used
+- ""
+date: "2021-09-30"
+description: Biden's Approval Margins # the title that will show up once someone gets to this page
+draft: false
+image: spices.jpg # save picture in \static\img\blogs. Acceptable formats= jpg, jpeg, or png . Your iPhone pics wont work
+
+keywords: ""
+slug: biden_approval # slug is the shorthand URL address... no spaces plz
+title: Biden's Approval Margins
+---
+
+
+
+<div id="bidens-approval-margins" class="section level1">
+<h1>Biden’s Approval Margins</h1>
+<p>We will analyse the evolution of approval margins of US
+President Joe Biden. Glimpsing at the dataset, we notice there are 22
+variables and 4,495 observations:</p>
+<pre class="r"><code># Import approval polls data directly off fivethirtyeight website
+approval_polllist &lt;- read_csv(&#39;https://projects.fivethirtyeight.com/biden-approval-data/approval_polllist.csv&#39;) 
+
+glimpse(approval_polllist)</code></pre>
+<pre><code>## Rows: 4,569
+## Columns: 22
+## $ president           &lt;chr&gt; &quot;Joe Biden&quot;, &quot;Joe Biden&quot;, &quot;Joe Biden&quot;, &quot;Joe Biden&quot;…
+## $ subgroup            &lt;chr&gt; &quot;All polls&quot;, &quot;All polls&quot;, &quot;All polls&quot;, &quot;All polls&quot;…
+## $ modeldate           &lt;chr&gt; &quot;9/18/2022&quot;, &quot;9/18/2022&quot;, &quot;9/18/2022&quot;, &quot;9/18/2022&quot;…
+## $ startdate           &lt;chr&gt; &quot;1/19/2021&quot;, &quot;1/19/2021&quot;, &quot;1/20/2021&quot;, &quot;1/20/2021&quot;…
+## $ enddate             &lt;chr&gt; &quot;1/21/2021&quot;, &quot;1/21/2021&quot;, &quot;1/21/2021&quot;, &quot;1/21/2021&quot;…
+## $ pollster            &lt;chr&gt; &quot;Morning Consult&quot;, &quot;Rasmussen Reports/Pulse Opinio…
+## $ grade               &lt;chr&gt; &quot;B&quot;, &quot;B&quot;, &quot;B-&quot;, &quot;B&quot;, &quot;B&quot;, &quot;B+&quot;, &quot;B&quot;, &quot;B+&quot;, &quot;B-&quot;, &quot;…
+## $ samplesize          &lt;dbl&gt; 15000, 1500, 1115, 1993, 15000, 1516, 15000, 941, …
+## $ population          &lt;chr&gt; &quot;a&quot;, &quot;lv&quot;, &quot;a&quot;, &quot;rv&quot;, &quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;rv&quot;, &quot;rv&quot;, &quot;…
+## $ weight              &lt;dbl&gt; 0.2594, 0.3382, 1.1014, 0.0930, 0.2333, 1.2454, 0.…
+## $ influence           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+## $ approve             &lt;dbl&gt; 50.0, 48.0, 55.5, 56.0, 51.0, 45.0, 52.0, 63.0, 58…
+## $ disapprove          &lt;dbl&gt; 28.0, 45.0, 31.6, 31.0, 28.0, 28.0, 29.0, 37.0, 32…
+## $ adjusted_approve    &lt;dbl&gt; 49.4, 49.1, 54.6, 55.4, 50.4, 46.0, 51.4, 59.4, 57…
+## $ adjusted_disapprove &lt;dbl&gt; 30.9, 40.3, 32.4, 33.9, 30.9, 29.0, 31.9, 38.4, 32…
+## $ multiversions       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+## $ tracking            &lt;lgl&gt; TRUE, TRUE, NA, NA, TRUE, NA, TRUE, NA, NA, TRUE, …
+## $ url                 &lt;chr&gt; &quot;https://morningconsult.com/form/global-leader-app…
+## $ poll_id             &lt;dbl&gt; 74272, 74247, 74248, 74246, 74273, 74327, 74274, 7…
+## $ question_id         &lt;dbl&gt; 139491, 139395, 139404, 139394, 139492, 139570, 13…
+## $ createddate         &lt;chr&gt; &quot;1/28/2021&quot;, &quot;1/22/2021&quot;, &quot;1/22/2021&quot;, &quot;1/22/2021&quot;…
+## $ timestamp           &lt;chr&gt; &quot;14:51:31 18 Sep 2022&quot;, &quot;14:51:31 18 Sep 2022&quot;, &quot;1…</code></pre>
+<div id="create-a-plot" class="section level2">
+<h2>Create a plot</h2>
+<p>We will first calculate the net approval rate (approve - disapprove) for
+each week in 2022 along with its 95% confidence interval, and then plot
+the results as a line plot grouping by respodent group (Adults, Voters,
+All Groups).</p>
+<pre class="r"><code>fixed_dates &lt;- approval_polllist %&gt;%
+  mutate(date = mdy(enddate),
+         weeks = week(date),
+         year = year(date),
+         net_rate = approve - disapprove) %&gt;%
+  filter(year == 2022, weeks&lt;50) %&gt;%
+  group_by(subgroup , weeks) %&gt;%
+  
+  # we calculated the 95% confidence interval. 
+  summarise(mean_rate = mean(net_rate,na.rm=TRUE),
+            sd_rate = sd(net_rate,na.rm=TRUE),
+            number = n(),
+            t_critical = qt(0.975,number-1),
+            lower_bound = mean_rate - t_critical*sd_rate/ sqrt(number),
+            upper_bound = mean_rate + t_critical*sd_rate/ sqrt(number)) 
+
+# we draw the graph of the net approval rate changing over weeks with its confidence interval.
+  ggplot(fixed_dates, aes(x = weeks, y = mean_rate, color = subgroup)) + 
+  geom_ribbon(aes(ymin = lower_bound, ymax = upper_bound), 
+              fill = &quot;orange&quot;, 
+              alpha = 0.25, 
+              show.legend = FALSE) +
+    facet_grid(rows = vars(subgroup)) +
+    geom_line(aes(x = weeks, y = mean_rate, 
+                  color = subgroup),
+              show.legend = FALSE) +
+    labs(title = &quot;Biden&#39;s net approval ratings in 2022&quot;,
+         subtitle = &quot;Weekly Data, Approve - Disapprove, %&quot;,
+         caption = &quot;Source: https://projects.fivethirtyeight.com/biden-approval-data/&quot;,
+         x = NULL, 
+         y = NULL) +
+    theme_minimal()</code></pre>
+<p><img src="/blogs/biden_approval_files/figure-html/question2-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p>We can see President Biden’s net approval relative has remained negative
+since the first week of 2022 among all poll respondents, meaning more
+people disapprove than approve of the President. Furthermore, we notice
+a sharp decline in the net approval rate beginning in week 23. Since
+that time, the approval rate seems to have returned to pre-drop levels,
+potentially due to the POTUS’s recent delivery on several campaign
+promises, primarily passing the Inflation Reduction Act.</p>
+</div>
+</div>
