@@ -84,7 +84,7 @@ params:
       - image: guitar.jpg
         subtitle: About me
         title: CV
-        url: blogs/aliquam
+        url: blogs/andrew_cv
       - image: stocks.jpg
         subtitle: R analysis
         title: Risk-Return of DJIA Stocks
